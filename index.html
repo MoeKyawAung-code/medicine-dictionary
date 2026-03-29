@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💊 Medicine Dictionary | ဆေးဝါးအဘိဓာန်</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Noto+Sans+Myanmar:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080e1a;
+    --bg2: #0d1726;
+    --bg3: #111f35;
+    --surface: #142038;
+    --surface2: #1a2d4a;
+    --border: #1e3555;
+    --cyan: #00d4c8;
+    --cyan2: #00b8ae;
+    --gold: #f5c842;
+    --gold2: #e6b830;
+    --red: #ff4d6d;
+    --green: #39d98a;
+    --blue: #4d9fff;
+    --purple: #9b72ff;
+    --text: #e8eef8;
+    --text2: #8ba3c4;
+    --text3: #4a6580;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND GRID ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,200,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,200,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,200,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 48px 24px 36px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(0,212,200,0.05) 0%, transparent 100%);
+  }
+
+  .cross-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px; height: 64px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--cyan), var(--cyan2));
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0,212,200,0.4);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%,100% { box-shadow: 0 0 40px rgba(0,212,200,0.4); }
+    50% { box-shadow: 0 0 70px rgba(0,212,200,0.7); }
+  }
+
+  .cross-icon::before, .cross-icon::after {
+    content: '';
+    position: absolute;
+    background: var(--bg);
+    border-radius: 3px;
+  }
+  .cross-icon::before { width: 8px; height: 36px; }
+  .cross-icon::after { width: 36px; height: 8px; }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text) 30%, var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+
+  .subtitle-mm {
+    font-family: 'Noto Sans Myanmar', sans-serif;
+    font-size: 1.15rem;
+    color: var(--cyan);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  .subtitle-en {
+    font-size: 0.9rem;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+    margin: 32px auto 0;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  #searchInput {
+    width: 100%;
+    padding: 16px 20px 16px 52px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  #searchInput::placeholder { color: var(--text3); }
+  #searchInput:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0,212,200,0.15);
+  }
+
+  .lang-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 6px;
+  }
+
+  .lang-btn {
+    padding: 5px 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text2);
+    font-size: 0.72rem;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+
+  .lang-btn.active {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: var(--bg);
+    font-weight: 500;
+  }
+
+  .categories {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .cat-btn {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    color: var(--text2);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .cat-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .cat-btn.active {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  /* ── RESULTS COUNT ── */
+  .results-info {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .results-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text3);
+  }
+
+  .results-count span { color: var(--cyan); }
+
+  /* ── GRID ── */
+  .grid {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+    margin: 20px auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease forwards;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+    transition: opacity 0.3s;
+    opacity: 0.6;
+  }
+
+  .card:hover {
+    border-color: var(--cyan);
+    background: var(--surface2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,212,200,0.12);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  /* category colors */
+  .card[data-cat="antibiotic"]::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .card[data-cat="painkiller"]::before { background: linear-gradient(90deg, var(--red), var(--gold)); }
+  .card[data-cat="vitamin"]::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+  .card[data-cat="antacid"]::before { background: linear-gradient(90deg, var(--purple), var(--blue)); }
+  .card[data-cat="antidiabetic"]::before { background: linear-gradient(90deg, var(--gold), var(--red)); }
+  .card[data-cat="antihypertensive"]::before { background: linear-gradient(90deg, var(--red), var(--purple)); }
+  .card[data-cat="antihistamine"]::before { background: linear-gradient(90deg, var(--cyan), var(--purple)); }
+  .card[data-cat="antifungal"]::before { background: linear-gradient(90deg, var(--gold), var(--green)); }
+  .card[data-cat="antiviral"]::before { background: linear-gradient(90deg, var(--blue), var(--purple)); }
+  .card[data-cat="supplement"]::before { background: linear-gradient(90deg, var(--green), var(--gold)); }
+  .card[data-cat="cardiac"]::before { background: linear-gradient(90deg, var(--red), var(--blue)); }
+  .card[data-cat="respiratory"]::before { background: linear-gradient(90deg, var(--blue), var(--green)); }
+  .card[data-cat="antidepressant"]::before { background: linear-gradient(90deg, var(--purple), var(--cyan)); }
+  .card[data-cat="antiseptic"]::before { background: linear-gradient(90deg, var(--cyan), var(--green)); }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .card-names { flex: 1; }
+
+  .name-en {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+
+  .name-mm {
+    font-family: 'Noto Sans Myanmar', sans-serif;
+    font-size: 0.9rem;
+    color: var(--cyan);
+    line-height: 1.4;
+  }
+
+  .cat-badge {
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .generic-row {
+    font-size: 0.78rem;
+    color: var(--text3);
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .generic-row span { color: var(--text2); }
+
+  .uses-en {
+    font-size: 0.83rem;
+    color: var(--text2);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .uses-mm {
+    font-family: 'Noto Sans Myanmar', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text3);
+    line-height: 1.6;
+  }
+
+  .card-footer {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    padding: 3px 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    font-size: 0.68rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,14,26,0.88);
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg2);
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .modal-close {
+    width: 36px; height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text2);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .modal-close:hover { background: var(--red); border-color: var(--red); color: white; }
+
+  .modal-title-en {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .modal-title-mm {
+    font-family: 'Noto Sans Myanmar', sans-serif;
+    font-size: 1.1rem;
+    color: var(--cyan);
+    margin-top: 4px;
+  }
+
+  .modal-body {
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .detail-section { }
+
+  .detail-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .detail-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .detail-en {
+    font-size: 0.9rem;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .detail-mm {
+    font-family: 'Noto Sans Myanmar', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text3);
+    line-height: 1.7;
+  }
+
+  .dosage-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .dosage-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .dosage-type {
+    font-size: 0.68rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
+  }
+
+  .dosage-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .warning-box {
+    background: rgba(255,77,109,0.08);
+    border: 1px solid rgba(255,77,109,0.25);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+
+  .warning-box .detail-en { color: var(--red); font-size: 0.82rem; }
+  .warning-box .detail-mm { font-size: 0.78rem; }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .no-results-icon { font-size: 3rem; margin-bottom: 16px; }
+  .no-results h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--text2); margin-bottom: 8px; }
+  .no-results p { font-size: 0.85rem; color: var(--text3); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 32px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--text3);
+    line-height: 1.8;
+  }
+
+  footer a { color: var(--cyan); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .dosage-grid { grid-template-columns: 1fr; }
+    .stats-bar { gap: 20px; }
+    .modal { border-radius: 16px; }
+    .modal-header, .modal-body { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="cross-icon"></div>
+  <h1>Medicine Dictionary</h1>
+  <p class="subtitle-mm">ဆေးဝါးအဘိဓာန်</p>
+  <p class="subtitle-en">English · မြန်မာဘာသာ Bilingual Reference</p>
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" id="totalCount">0</div>
+      <div class="stat-label">Medicines</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="catCount">0</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Languages</div>
+    </div>
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="searchInput" placeholder="Search medicine name or ဆေးအမည်ရှာရန်…">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="both">Both</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="mm"> မြန်မာ</button>
+    </div>
+  </div>
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="all">All · အားလုံး</button>
+  </div>
+</div>
+
+<!-- RESULTS INFO -->
+<div class="results-info">
+  <div class="results-count">Showing <span id="showCount">0</span> medicines</div>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="grid"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title-en" id="modal-title-en"></div>
+        <div class="modal-title-mm" id="modal-title-mm"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>💊 Medicine Dictionary · ဆေးဝါးအဘိဓာန်</p>
+  <p>Built for Myanmar developer community · <a href="https://github.com/mmoekyawaung-code" target="_blank">GitHub</a></p>
+  <p style="margin-top:8px;font-size:0.7rem;color:var(--text3);">⚠️ For educational reference only. Consult a qualified doctor before taking any medicine. · ဤအချက်အလက်များသည် ပညာရေးဆိုင်ရာ ကိုးကားရန်သာဖြစ်သည်။</p>
+</footer>
+
+<script>
+const MEDICINES = [
+  /* ─── ANTIBIOTICS ─── */
+  {
+    id: 1, cat: "antibiotic",
+    nameEn: "Amoxicillin", nameMm: "အမော့စီဆီလင်",
+    genericEn: "Amoxicillin trihydrate", genericMm: "အမော့စီဆီလင် ထရိုင်ဟိုက်ဒရိတ်",
+    usesEn: "Treats bacterial infections including ear infections, pneumonia, bronchitis, urinary tract infections, and skin infections.",
+    usesMm: "နားကူး၊폐ရောဂါ၊ ဆီးလမ်းကြောင်းပိုးဝင်ခြင်း၊ အရေပြားပိုးဝင်ခြင်းတို့ကို ကုသသည်။",
+    dosageAdult: "500mg 3×/day",
+    dosageChild: "25mg/kg/day",
+    sideEffectEn: "Nausea, diarrhea, rash, allergic reactions.",
+    sideEffectMm: "ပျို့ အန်ခြင်း၊ ဝမ်းလျှောခြင်း၊ အစာမကြေခြင်း၊ ပန်းနာရင်ကြပ်ဖြစ်နိုင်သည်။",
+    tags: ["oral", "prescription", "penicillin"]
+  },
+  {
+    id: 2, cat: "antibiotic",
+    nameEn: "Azithromycin", nameMm: "အာဇီသရိုမိုင်ဆင်",
+    genericEn: "Azithromycin dihydrate", genericMm: "အာဇီသရိုမိုင်ဆင်",
+    usesEn: "Treats respiratory infections, sexually transmitted infections, and skin infections.",
+    usesMm: "အသက်ရှူလမ်းကြောင်း ပိုးဝင်ခြင်း၊ ရောဂါပိုးကူးနိုင်သောရောဂါများ ကုသရာတွင် အသုံးပြုသည်။",
+    dosageAdult: "500mg 1×/day × 3 days",
+    dosageChild: "10mg/kg day 1, then 5mg/kg",
+    sideEffectEn: "Diarrhea, nausea, abdominal pain, vomiting.",
+    sideEffectMm: "ဝမ်းလျှောခြင်း၊ ပျို့ အန်ခြင်း၊ ဗိုက်နာကိုက်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["oral", "prescription", "macrolide"]
+  },
+  {
+    id: 3, cat: "antibiotic",
+    nameEn: "Ciprofloxacin", nameMm: "ဆိုပရိုဖလောက်ဆာဆင်",
+    genericEn: "Ciprofloxacin HCl", genericMm: "ဆိုပရိုဖလောက်ဆာဆင် ဟိုက်ဒရိုကလိုရိုက်",
+    usesEn: "Treats urinary tract infections, respiratory tract infections, bone infections, and typhoid fever.",
+    usesMm: "ဆီးလမ်းကြောင်းပိုးဝင်ခြင်း၊ သံဆိပ်တက်ရောဂါ၊ အရိုးပိုးဝင်ခြင်း ကုသသည်။",
+    dosageAdult: "500–750mg 2×/day",
+    dosageChild: "Not for <18 yrs",
+    sideEffectEn: "Nausea, diarrhea, dizziness, tendon rupture risk.",
+    sideEffectMm: "မူးဝြေ့ ငြိမ်းခြင်း၊ ဝမ်းလျှောခြင်း၊ အသားအကြောပြတ်ကွဲနိုင်သည်။",
+    tags: ["oral", "prescription", "fluoroquinolone"]
+  },
+  {
+    id: 4, cat: "antibiotic",
+    nameEn: "Metronidazole", nameMm: "မက်ထရိုနီဒပ်ဇိုး",
+    genericEn: "Metronidazole", genericMm: "မက်ထရိုနီဒပ်ဇိုး",
+    usesEn: "Treats anaerobic bacterial infections, protozoal infections including amoeba and giardia.",
+    usesMm: "အမီးဘာပိုး၊ ဂျာဒီးယားပိုး၊ အလေးချိန်မဲ့ဘက်တီးရီးယားပိုးများ ကုသသည်။",
+    dosageAdult: "400–500mg 3×/day",
+    dosageChild: "7.5mg/kg 3×/day",
+    sideEffectEn: "Metallic taste, nausea, dizziness. Avoid alcohol.",
+    sideEffectMm: "သတ္တုဓာတ်အရသာ၊ ပျို့ ခြင်း ၊ ဝိုင်တပ်ကင်ငန်း မသောက်ရ။",
+    tags: ["oral", "prescription", "nitroimidazole"]
+  },
+  /* ─── PAINKILLERS ─── */
+  {
+    id: 5, cat: "painkiller",
+    nameEn: "Paracetamol", nameMm: "ပါရာဆီတမော်",
+    genericEn: "Acetaminophen", genericMm: "အာဆီတာမီနိုဖင်",
+    usesEn: "Relieves mild to moderate pain including headache, toothache, muscle aches. Reduces fever.",
+    usesMm: "ခေါင်းကိုက်ခြင်း၊ သွားကိုက်ခြင်း၊ ကြွက်သားနာကိုက်ခြင်း၊ ဖျားခြင်းများကို သက်သာစေသည်။",
+    dosageAdult: "500–1000mg every 4–6 hrs",
+    dosageChild: "15mg/kg every 4–6 hrs",
+    sideEffectEn: "Generally safe; liver damage with overdose.",
+    sideEffectMm: "ပုံမှန်အသုံးပြုလျှင် ဘေးကင်းသည်။ အများကြီးသောက်လျှင် အသည်းထိခိုက်နိုင်သည်။",
+    tags: ["OTC", "oral", "fever", "pain"]
+  },
+  {
+    id: 6, cat: "painkiller",
+    nameEn: "Ibuprofen", nameMm: "အိုင်ဗူပရိုဖင်",
+    genericEn: "Ibuprofen", genericMm: "အိုင်ဗူပရိုဖင်",
+    usesEn: "Anti-inflammatory, analgesic, antipyretic. Treats arthritis, menstrual cramps, minor injuries.",
+    usesMm: "ရောင်ရမ်းမှု လျှော့ချပေးသည်၊ အနာကျင်မှု သက်သာစေသည်၊ ဖျားပူကျ​ အောင် ကူညီသည်။",
+    dosageAdult: "200–400mg every 4–6 hrs",
+    dosageChild: "5–10mg/kg every 6–8 hrs",
+    sideEffectEn: "Stomach upset, heartburn, dizziness. Avoid in peptic ulcer.",
+    sideEffectMm: "အစာအိမ်နာကိုက်ခြင်း၊ ရင်ပူရောင်ခြင်း။ အစာအိမ်အနာ ရှိသူများ ဂရုစိုက်ရမည်။",
+    tags: ["NSAID", "OTC", "anti-inflammatory"]
+  },
+  {
+    id: 7, cat: "painkiller",
+    nameEn: "Diclofenac", nameMm: "ဒိုင်ကလိုဖင်နပ်",
+    genericEn: "Diclofenac Sodium", genericMm: "ဒိုင်ကလိုဖင်နပ် ဆိုဒီယမ်",
+    usesEn: "Treats pain and inflammation in arthritis, sprains, muscle strains, dental pain.",
+    usesMm: "အဆစ်ရောင်ရောဂါ၊ ဒဏ်ရာနာကိုက်မှု၊ ကြွက်သားတင်းကျပ်မှု၊ သွားကိုက်ခြင်း ကုသသည်။",
+    dosageAdult: "50mg 2–3×/day",
+    dosageChild: "1mg/kg 2–3×/day",
+    sideEffectEn: "GI upset, headache, increased risk of heart events.",
+    sideEffectMm: "အစာခြေလမ်းကြောင်း အနှောင့်အယှက်ဖြစ်ခြင်း၊ နှလုံးသွေးကြောဆိုင်ရာ အန္တရာယ် ရှိနိုင်သည်။",
+    tags: ["NSAID", "prescription", "anti-inflammatory"]
+  },
+  /* ─── VITAMINS ─── */
+  {
+    id: 8, cat: "vitamin",
+    nameEn: "Vitamin C", nameMm: "ဗီတာမင် စီ",
+    genericEn: "Ascorbic Acid", genericMm: "အာစကော်ဗစ် အက်ဆစ်",
+    usesEn: "Boosts immune system, aids wound healing, antioxidant. Prevents and treats scurvy.",
+    usesMm: "ကိုယ်ခံအားကို မြှင့်တင်သည်။ အနာအဆာ ပျောက်ကင်းစေသည်။ ဗီတာမင်စီချို့တဲ့ မှုကုသသည်။",
+    dosageAdult: "500–1000mg/day",
+    dosageChild: "250–500mg/day",
+    sideEffectEn: "Generally safe. High doses may cause diarrhea or kidney stones.",
+    sideEffectMm: "ပုံမှန်အသုံးပြုလျှင် ဘေးကင်းသည်။ ဆေးပမာဏ မြင့်လျှင် ကျောက်ကပ်ကျောက်ဖြစ်နိုင်သည်။",
+    tags: ["supplement", "OTC", "immune"]
+  },
+  {
+    id: 9, cat: "vitamin",
+    nameEn: "Vitamin D3", nameMm: "ဗီတာမင် ဒီ သုံး",
+    genericEn: "Cholecalciferol", genericMm: "ကိုးလဲကယ်စီဖာရော",
+    usesEn: "Essential for calcium absorption, bone health, and immune function. Treats rickets and osteoporosis.",
+    usesMm: "အရိုးကျန်းမာရေး၊ ကယ်လ်စီယမ်စုပ်ယူမှု မြှင့်တင်သည်။ ဆူးငါးရောဂါနှင့် အရိုးပွဆေးနည်း ကုသသည်။",
+    dosageAdult: "600–800 IU/day",
+    dosageChild: "400–600 IU/day",
+    sideEffectEn: "Excessive doses cause hypercalcemia, kidney problems.",
+    sideEffectMm: "ဆေးပမာဏ မြင့်လွန်းလျှင် ကယ်လ်စီယမ်ပမာဏ မြင့်ကပ်ကပ်ဖြစ်ကာ ကျောက်ကပ် ထိခိုက်နိုင်သည်။",
+    tags: ["supplement", "OTC", "bone"]
+  },
+  {
+    id: 10, cat: "vitamin",
+    nameEn: "Vitamin B12", nameMm: "ဗီတာမင် ဘီ တစ်ဆယ့်နှစ်",
+    genericEn: "Cyanocobalamin", genericMm: "ဆိုင်ယာနိုကိုဘလမင်",
+    usesEn: "Treats pernicious anemia, nerve damage, and B12 deficiency. Important for neurological function.",
+    usesMm: "သွေးနည်းရောဂါ၊ အာရုံကြောချို့တဲ့မှု ကုသသည်။ အာရုံကြောလုပ်ဆောင်မှုအတွက် လိုအပ်သည်။",
+    dosageAdult: "1000mcg/day (deficiency)",
+    dosageChild: "As prescribed",
+    sideEffectEn: "Generally very safe. Rarely causes acne or rash.",
+    sideEffectMm: "ဘေးကင်းသည်။ ရှားပါးသောကိစ္စများတွင် အဆီပိတ်ဝက်ခြံ ဖြစ်နိုင်သည်။",
+    tags: ["supplement", "OTC", "nerve", "anemia"]
+  },
+  /* ─── ANTACIDS ─── */
+  {
+    id: 11, cat: "antacid",
+    nameEn: "Omeprazole", nameMm: "အိုမီပရာဇိုး",
+    genericEn: "Omeprazole", genericMm: "အိုမီပရာဇိုး",
+    usesEn: "Treats acid reflux, peptic ulcer, and GERD by reducing stomach acid production.",
+    usesMm: "အစာအိမ်တွင်းရောဂါ၊ GERD၊ အစာကျောချောင်း ရောဂါများကို အစာအိမ်အက်ဆစ် လျှော့ချ၍ ကုသသည်။",
+    dosageAdult: "20–40mg/day",
+    dosageChild: "0.5–1mg/kg/day",
+    sideEffectEn: "Headache, diarrhea, long-term magnesium deficiency.",
+    sideEffectMm: "ခေါင်းကိုက်ခြင်း၊ ဝမ်းလျှောခြင်း၊ ရေရှည်သောက်လျှင် မဂ္ဂနီဆီယမ် ချို့တဲ့နိုင်သည်။",
+    tags: ["PPI", "prescription", "gastro"]
+  },
+  {
+    id: 12, cat: "antacid",
+    nameEn: "Ranitidine", nameMm: "ရာနီတီဒင်း",
+    genericEn: "Ranitidine HCl", genericMm: "ရာနီတီဒင်း ဟိုက်ဒရိုကလိုရိုက်",
+    usesEn: "H2 blocker that reduces stomach acid. Treats heartburn, GERD, and ulcers.",
+    usesMm: "အစာအိမ်အက်ဆစ် ထုတ်မှုကို လျော့ချပေးသည်။ ရင်ပူရောင်ခြင်း၊ အစာအိမ်အနာ ကုသသည်။",
+    dosageAdult: "150mg 2×/day",
+    dosageChild: "2–4mg/kg 2×/day",
+    sideEffectEn: "Headache, dizziness, constipation, diarrhea.",
+    sideEffectMm: "ခေါင်းကိုက်ခြင်း၊ မူးဝြေ့ ငြိမ်းခြင်း၊ ဝမ်းချုပ်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["H2 blocker", "OTC", "gastro"]
+  },
+  /* ─── ANTIDIABETIC ─── */
+  {
+    id: 13, cat: "antidiabetic",
+    nameEn: "Metformin", nameMm: "မက်ဖော်မင်",
+    genericEn: "Metformin HCl", genericMm: "မက်ဖော်မင် ဟိုက်ဒရိုကလိုရိုက်",
+    usesEn: "First-line treatment for type 2 diabetes. Reduces blood glucose by decreasing liver glucose production.",
+    usesMm: "ဆီးချိုရောဂါ အမျိုးအစားနှစ်ကို ပထမလိုင်းကုသမှုဖြင့် ကုသသည်။ သွေးတွင်းသကြားဓာတ် ကျဆင်းစေသည်။",
+    dosageAdult: "500–2000mg/day with meals",
+    dosageChild: "500mg 2×/day (>10yrs)",
+    sideEffectEn: "Nausea, diarrhea, lactic acidosis (rare). Take with food.",
+    sideEffectMm: "ပျို့ ဝမ်းလျှောခြင်း ဖြစ်နိုင်သည်။ အစာနှင့်အတူ သောက်ရမည်။",
+    tags: ["prescription", "oral", "diabetes"]
+  },
+  {
+    id: 14, cat: "antidiabetic",
+    nameEn: "Glibenclamide", nameMm: "ဂလိုင်ဘင်ကလမိုင်",
+    genericEn: "Glibenclamide (Glyburide)", genericMm: "ဂလိုင်ဘင်ကလမိုင်",
+    usesEn: "Sulfonylurea drug for type 2 diabetes. Stimulates insulin secretion from pancreas.",
+    usesMm: "ဆီးချိုရောဂါ အမျိုးအစားနှစ်ကုသသည်။ ပန်ကရိယမှ အင်ဆူလင် ထုတ်မှုကို နှိုးဆွပေးသည်။",
+    dosageAdult: "2.5–20mg/day",
+    dosageChild: "Not recommended",
+    sideEffectEn: "Hypoglycemia, weight gain, nausea.",
+    sideEffectMm: "သွေးတွင်းသကြားဓာတ် ကျဆင်းနိုင်ခြင်း၊ ကိုယ်အလေးချိန် တက်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["prescription", "sulfonylurea", "diabetes"]
+  },
+  /* ─── ANTIHYPERTENSIVE ─── */
+  {
+    id: 15, cat: "antihypertensive",
+    nameEn: "Amlodipine", nameMm: "အမ်လိုဒီပင်",
+    genericEn: "Amlodipine Besylate", genericMm: "အမ်လိုဒီပင် ဘီဆီလိတ်",
+    usesEn: "Calcium channel blocker for hypertension and angina. Relaxes blood vessels.",
+    usesMm: "သွေးတိုးရောဂါနှင့် နှလုံးကြပ်ရောဂါ ကုသသည်။ သွေးကြောများ ချဲ့ပေးသည်။",
+    dosageAdult: "5–10mg/day",
+    dosageChild: "2.5–5mg/day",
+    sideEffectEn: "Ankle swelling, headache, flushing, dizziness.",
+    sideEffectMm: "ခြေကျင်းမောင်းရောင်ခြင်း၊ မျက်နှာနီမြန်ခြင်း၊ ခေါင်းကိုက်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["CCB", "prescription", "hypertension"]
+  },
+  {
+    id: 16, cat: "antihypertensive",
+    nameEn: "Enalapril", nameMm: "အင်နာပရစ်",
+    genericEn: "Enalapril Maleate", genericMm: "အင်နာပရစ် မေလိတ်",
+    usesEn: "ACE inhibitor for hypertension and heart failure. Reduces blood pressure by relaxing vessels.",
+    usesMm: "သွေးတိုးရောဂါ၊ နှလုံးပျက်ကွက်ရောဂါ ကုသသည်။ ACE inhibitor အမျိုးအစားဖြစ်သည်။",
+    dosageAdult: "5–40mg/day",
+    dosageChild: "0.08mg/kg/day",
+    sideEffectEn: "Dry cough (common), dizziness, high potassium levels.",
+    sideEffectMm: "ခြောက်သွေ့သောချောင်းဆိုးခြင်း (အဖြစ်များသည်)၊ ပိုတက်စီယမ် မြင့်နိုင်သည်။",
+    tags: ["ACE inhibitor", "prescription", "hypertension"]
+  },
+  /* ─── ANTIHISTAMINE ─── */
+  {
+    id: 17, cat: "antihistamine",
+    nameEn: "Cetirizine", nameMm: "ဆီတီရီဇင်",
+    genericEn: "Cetirizine HCl", genericMm: "ဆီတီရီဇင် ဟိုက်ဒရိုကလိုရိုက်",
+    usesEn: "Antihistamine for allergic rhinitis, urticaria, hay fever, and skin allergies.",
+    usesMm: "နှာရည်ယိုရောဂါ၊ ယားယံ​ဖ်တ၊ ပန်းနာ ဓာတ်မတည့်ချက်များ ကုသသည်။",
+    dosageAdult: "10mg/day",
+    dosageChild: "5mg/day (2–6 yrs)",
+    sideEffectEn: "Drowsiness (mild), dry mouth, headache.",
+    sideEffectMm: "အိပ်ငိုက်ခြင်း (အနည်းငယ်)၊ ပါးစပ်ခြောက်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["OTC", "antiallergy", "non-sedating"]
+  },
+  {
+    id: 18, cat: "antihistamine",
+    nameEn: "Chlorpheniramine", nameMm: "ကလိုဖင်နီရာမင်း",
+    genericEn: "Chlorpheniramine Maleate", genericMm: "ကလိုဖင်နီရာမင်း မေလိတ်",
+    usesEn: "Treats allergic reactions, common cold symptoms, hay fever, and insect bite reactions.",
+    usesMm: "ဓာတ်မတည့်ချက်ပျောက်ဆေး၊ တုပ်ကွေးလက္ခဏာများ၊ ပျားကောင်ဆိုး ကုသသည်။",
+    dosageAdult: "4mg every 4–6 hrs",
+    dosageChild: "2mg every 4–6 hrs (>6 yrs)",
+    sideEffectEn: "Drowsiness, dry mouth, blurred vision.",
+    sideEffectMm: "အိပ်ငိုက်ခြင်း၊ ပါးစပ်ခြောက်ခြင်း၊ မျက်မှောင်ကျုံ့မြင်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["OTC", "antiallergy", "sedating"]
+  },
+  /* ─── ANTIFUNGAL ─── */
+  {
+    id: 19, cat: "antifungal",
+    nameEn: "Fluconazole", nameMm: "ဖလူကိုနာဇိုး",
+    genericEn: "Fluconazole", genericMm: "ဖလူကိုနာဇိုး",
+    usesEn: "Treats candidiasis (yeast infections), cryptococcal meningitis, ringworm, and other fungal infections.",
+    usesMm: "မှိုပိုးကြောင့် ဖြစ်သောရောဂါများ၊ ကင်ဒိုင်ဒါပိုး ဝင်ခြင်း ကုသသည်။",
+    dosageAdult: "150mg single dose or 50–400mg/day",
+    dosageChild: "3–12mg/kg/day",
+    sideEffectEn: "Nausea, headache, rash, liver enzyme elevation.",
+    sideEffectMm: "ပျို့ ဝမ်းလျှောခြင်း၊ အသည်းဆိုင်ရာ ပြောင်းလဲမှု ဖြစ်နိုင်သည်။",
+    tags: ["prescription", "oral", "fungal"]
+  },
+  {
+    id: 20, cat: "antifungal",
+    nameEn: "Clotrimazole", nameMm: "ကလိုထရိုမာဇိုး",
+    genericEn: "Clotrimazole", genericMm: "ကလိုထရိုမာဇိုး",
+    usesEn: "Topical antifungal for athlete's foot, ringworm, jock itch, and vaginal yeast infections.",
+    usesMm: "ခြေထောက်မှိုရောဂါ၊ ကြေသားမှိုရောဂါ၊ အသားထိ ထည့်သွင်းသောမှိုပိုး ကုသသည်။",
+    dosageAdult: "1% cream 2–3×/day",
+    dosageChild: "1% cream 2×/day",
+    sideEffectEn: "Local irritation, burning sensation, rash.",
+    sideEffectMm: "ထည့်သွင်းသောနေရာ ပူပူလောင်လောင်ဖြစ်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["OTC", "topical", "fungal"]
+  },
+  /* ─── ANTIVIRAL ─── */
+  {
+    id: 21, cat: "antiviral",
+    nameEn: "Acyclovir", nameMm: "အာဆိုင်ကလိုဗစ်",
+    genericEn: "Aciclovir", genericMm: "အာဆိုင်ကလိုဗစ်",
+    usesEn: "Treats herpes simplex, herpes zoster (shingles), and chickenpox caused by herpesviruses.",
+    usesMm: "ဟာပိစ် (herpes) ပိုး၊ ငှက်ဖျားပိုး (Varicella)၊ Shingles ကုသသည်။",
+    dosageAdult: "200–800mg 5×/day",
+    dosageChild: "20mg/kg 4×/day",
+    sideEffectEn: "Nausea, diarrhea, headache. Stay well hydrated.",
+    sideEffectMm: "ပျို့ ဝမ်းလျှောခြင်း ဖြစ်နိုင်သည်။ ရေများများသောက်ရမည်။",
+    tags: ["prescription", "oral", "herpes"]
+  },
+  /* ─── CARDIAC ─── */
+  {
+    id: 22, cat: "cardiac",
+    nameEn: "Aspirin (Low Dose)", nameMm: "အက်စပရင် (ပမာဏနည်း)",
+    genericEn: "Acetylsalicylic Acid", genericMm: "အာဆီတိုင်လ်ဆာလီဆိုင်လစ် အက်ဆစ်",
+    usesEn: "Low-dose aspirin prevents blood clot formation; used for heart attack and stroke prevention.",
+    usesMm: "သွေးခဲတည်မှုကို ကာကွယ်သည်။ နှလုံးဖောက်ခြင်းနှင့် လေဖြတ်ခြင်း ကာကွယ်ရာ ​အသုံးပြုသည်။",
+    dosageAdult: "75–100mg/day",
+    dosageChild: "Not for children (Reye's risk)",
+    sideEffectEn: "GI bleeding, stomach irritation, bruising.",
+    sideEffectMm: "အစာအိမ်သွေးယိုခြင်း၊ ကြွက်သားပြာ ညိုနိုင်သည်။",
+    tags: ["OTC", "antiplatelet", "cardiac", "prevention"]
+  },
+  {
+    id: 23, cat: "cardiac",
+    nameEn: "Atorvastatin", nameMm: "အတော်ဗာစတာတင်",
+    genericEn: "Atorvastatin Calcium", genericMm: "အတော်ဗာစတာတင် ကယ်လ်စီယမ်",
+    usesEn: "Statin drug that lowers LDL cholesterol and triglycerides. Reduces cardiovascular risk.",
+    usesMm: "ကိုလက်စထရော LDL နှင့် Triglyceride ကျဆင်းစေသည်။ နှလုံးသွေးကြောဆိုင်ရာ အန္တရာယ် လျော့ပါးစေသည်။",
+    dosageAdult: "10–80mg/day at bedtime",
+    dosageChild: "10–20mg/day (>10 yrs)",
+    sideEffectEn: "Muscle pain (myopathy), liver enzyme elevation, headache.",
+    sideEffectMm: "ကြွက်သားနာကျင်ခြင်း၊ အသည်းဆိုင်ရာ ပြောင်းလဲမှု ဖြစ်နိုင်သည်။",
+    tags: ["statin", "prescription", "cholesterol"]
+  },
+  /* ─── RESPIRATORY ─── */
+  {
+    id: 24, cat: "respiratory",
+    nameEn: "Salbutamol", nameMm: "ဆော်လ်ဗျူတမော်",
+    genericEn: "Albuterol / Salbutamol", genericMm: "ဆော်လ်ဗျူတမော်",
+    usesEn: "Bronchodilator for asthma and COPD. Relieves bronchospasm and shortness of breath.",
+    usesMm: "ပန်းနာရင်ကြပ်နှင့် COPD ရောဂါ ကုသသည်။ အသက်ရှူလမ်းကြောင်း ကျဉ်းကပ်ခြင်း သက်သာစေသည်။",
+    dosageAdult: "2–4 puffs every 4–6 hrs",
+    dosageChild: "1–2 puffs every 4–6 hrs",
+    sideEffectEn: "Tremors, palpitations, headache, tachycardia.",
+    sideEffectMm: "လက်တုန်ခြင်း၊ နှလုံးခုန်မြန်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["inhaler", "prescription", "asthma"]
+  },
+  {
+    id: 25, cat: "respiratory",
+    nameEn: "Guaifenesin", nameMm: "ဂွိုင်ဖင်နဆင်",
+    genericEn: "Guaifenesin", genericMm: "ဂွိုင်ဖင်နဆင်",
+    usesEn: "Expectorant that thins and loosens mucus. Relieves chest congestion and productive cough.",
+    usesMm: "အဆုတ်ထဲ နှာချေးကို ပျော့ပြေ့စေသည်။ ရင်ဘတ်ပိတ်ဆို့ခြင်းနှင့် ချောင်းဆိုးခြင်း သက်သာစေသည်။",
+    dosageAdult: "200–400mg every 4 hrs",
+    dosageChild: "50–100mg every 4 hrs",
+    sideEffectEn: "Nausea, dizziness. Drink plenty of water.",
+    sideEffectMm: "ပျို့ ဝမ်းလျှောခြင်း ဖြစ်နိုင်သည်။ ရေများများသောက်ပါ။",
+    tags: ["OTC", "expectorant", "cough"]
+  },
+  /* ─── ANTIDEPRESSANT ─── */
+  {
+    id: 26, cat: "antidepressant",
+    nameEn: "Sertraline", nameMm: "ဆာထရာလင်း",
+    genericEn: "Sertraline HCl", genericMm: "ဆာထရာလင်း ဟိုက်ဒရိုကလိုရိုက်",
+    usesEn: "SSRI antidepressant for depression, panic disorder, OCD, PTSD, and social anxiety.",
+    usesMm: "စိတ်ဓာတ်ကျရောဂါ၊ Panic ရောဂါ၊ OCD၊ PTSD နှင့် လူမှုဆိုင်ရာ ကြောက်ရွံ့မှု ကုသသည်။",
+    dosageAdult: "50–200mg/day",
+    dosageChild: "25–200mg/day (>6 yrs OCD)",
+    sideEffectEn: "Nausea, sleep changes, dry mouth, sexual dysfunction.",
+    sideEffectMm: "ပျို့ ဝမ်းလျှောခြင်း၊ အိပ်မပျော်ခြင်း၊ ပါးစပ်ခြောက်ခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["SSRI", "prescription", "mental health"]
+  },
+  /* ─── ANTISEPTIC ─── */
+  {
+    id: 27, cat: "antiseptic",
+    nameEn: "Povidone Iodine", nameMm: "ပိုဗီဒိုင်း အိုင်အိုဒင်း",
+    genericEn: "Povidone-Iodine", genericMm: "ပိုဗီဒိုင်း အိုင်အိုဒင်း",
+    usesEn: "Antiseptic for wound cleansing, surgical skin preparation, and treating minor cuts and burns.",
+    usesMm: "အနာ သန့်ရှင်းရေး၊ ခွဲစိတ်မပြုမီ အသားသန့်ရေး၊ ဒဏ်ရာနှင့် မီးလောင်နာ ကုသသည်။",
+    dosageAdult: "10% solution topical",
+    dosageChild: "Diluted solution",
+    sideEffectEn: "Skin irritation, iodine allergy reaction.",
+    sideEffectMm: "အသား ယားယံနိုင်သည်။ အိုင်အိုဒင်း ဓာတ်မတည့်သူများ ဂရုစိုက်ရမည်။",
+    tags: ["OTC", "topical", "wound care"]
+  },
+  {
+    id: 28, cat: "antiseptic",
+    nameEn: "Hydrogen Peroxide", nameMm: "ဟိုက်ဒရိုဂျင် ပါအောက်ဆိုက်",
+    genericEn: "H₂O₂ 3%", genericMm: "ဟိုက်ဒရိုဂျင် ပါအောက်ဆိုက် ၃%",
+    usesEn: "Antiseptic for cleaning wounds, treating ear wax buildup, and oral care.",
+    usesMm: "ဒဏ်ရာသန့်ရှင်းရေး၊ နားအဆီသိပ်ခြင်း ကုသသည်။",
+    dosageAdult: "3% solution topical",
+    dosageChild: "3% solution (diluted)",
+    sideEffectEn: "Skin irritation, delayed wound healing with overuse.",
+    sideEffectMm: "အသားနာကျင်ခြင်း ဖြစ်နိုင်သည်။ အများကြီးသုံးလျှင် ဒဏ်ရာပြောင်းဖော်ကြောင်းနှောင့်နှေးစေသည်။",
+    tags: ["OTC", "topical", "wound care"]
+  },
+  /* ─── SUPPLEMENT ─── */
+  {
+    id: 29, cat: "supplement",
+    nameEn: "Iron (Ferrous Sulfate)", nameMm: "သံဓာတ် (ဖေးရပ်စ် ဆာဖိတ်)",
+    genericEn: "Ferrous Sulfate", genericMm: "ဖေးရပ်စ် ဆာဖိတ်",
+    usesEn: "Iron supplement for iron deficiency anemia. Essential for red blood cell production.",
+    usesMm: "သံဓာတ် ချို့တဲ့ကြောင့် ဖြစ်သော သွေးနည်းရောဂါ ကုသသည်။ သွေးနီဥဆဲလ်ထုတ်မှုအတွက် လိုအပ်သည်။",
+    dosageAdult: "200mg 3×/day",
+    dosageChild: "3–6mg elemental Fe/kg/day",
+    sideEffectEn: "Dark stools, constipation, nausea. Best taken with Vitamin C.",
+    sideEffectMm: "ဝမ်းနက်ခြင်း၊ ဝမ်းချုပ်ခြင်း ဖြစ်နိုင်သည်။ ဗီတာမင်စီနှင့်အတူ သောက်ရမည်။",
+    tags: ["OTC", "oral", "anemia", "mineral"]
+  },
+  {
+    id: 30, cat: "supplement",
+    nameEn: "Calcium Carbonate", nameMm: "ကယ်လ်စီယမ် ကာဘိုနိတ်",
+    genericEn: "Calcium Carbonate", genericMm: "ကယ်လ်စီယမ် ကာဘိုနိတ်",
+    usesEn: "Calcium supplement for bone health. Also used as antacid for heartburn and acid indigestion.",
+    usesMm: "အရိုးကျန်းမာရေးအတွက် ကယ်လ်စီယမ် ဖြည့်ပေးသည်။ ရင်ပူရောင်ခြင်း ကိုလည်း သက်သာစေသည်။",
+    dosageAdult: "500–1000mg 2–3×/day",
+    dosageChild: "500mg/day",
+    sideEffectEn: "Constipation, bloating, gas.",
+    sideEffectMm: "ဝမ်းချုပ်ခြင်း၊ ဗိုက်ဖောင်းပွခြင်း ဖြစ်နိုင်သည်။",
+    tags: ["OTC", "mineral", "bone", "antacid"]
+  },
+];
+
+/* ─── CATEGORY CONFIG ─── */
+const CAT_CONFIG = {
+  antibiotic:      { label: "Antibiotic · ပဋိဇီဝဆေး", color: "#4d9fff", bg: "rgba(77,159,255,0.12)" },
+  painkiller:      { label: "Painkiller · နာကျင်သက်သာဆေး", color: "#ff4d6d", bg: "rgba(255,77,109,0.12)" },
+  vitamin:         { label: "Vitamin · ဗီတာမင်", color: "#39d98a", bg: "rgba(57,217,138,0.12)" },
+  antacid:         { label: "Antacid · အစာအိမ်ဆေး", color: "#9b72ff", bg: "rgba(155,114,255,0.12)" },
+  antidiabetic:    { label: "Antidiabetic · ဆီးချိုဆေး", color: "#f5c842", bg: "rgba(245,200,66,0.12)" },
+  antihypertensive:{ label: "Antihypertensive · သွေးတိုးဆေး", color: "#ff4d6d", bg: "rgba(255,77,109,0.12)" },
+  antihistamine:   { label: "Antihistamine · ဓာတ်မတည့်ဆေး", color: "#00d4c8", bg: "rgba(0,212,200,0.12)" },
+  antifungal:      { label: "Antifungal · မှိုဆေး", color: "#f5c842", bg: "rgba(245,200,66,0.12)" },
+  antiviral:       { label: "Antiviral · ဗိုင်းရပ်စ်ဆေး", color: "#4d9fff", bg: "rgba(77,159,255,0.12)" },
+  cardiac:         { label: "Cardiac · နှလုံးဆေး", color: "#ff4d6d", bg: "rgba(255,77,109,0.12)" },
+  respiratory:     { label: "Respiratory · အဆုတ်ဆေး", color: "#4d9fff", bg: "rgba(77,159,255,0.12)" },
+  antidepressant:  { label: "Antidepressant · စိတ်ကုဆေး", color: "#9b72ff", bg: "rgba(155,114,255,0.12)" },
+  antiseptic:      { label: "Antiseptic · ပိုးသတ်ဆေး", color: "#00d4c8", bg: "rgba(0,212,200,0.12)" },
+  supplement:      { label: "Supplement · အာဟာဖြည့်ဆေး", color: "#39d98a", bg: "rgba(57,217,138,0.12)" },
+};
+
+/* ─── STATE ─── */
+let state = { query: "", cat: "all", lang: "both" };
+
+/* ─── INIT ─── */
+document.getElementById('totalCount').textContent = MEDICINES.length;
+document.getElementById('catCount').textContent = Object.keys(CAT_CONFIG).length;
+
+// Build category buttons
+const catDiv = document.getElementById('categories');
+Object.entries(CAT_CONFIG).forEach(([key, cfg]) => {
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn';
+  btn.dataset.cat = key;
+  btn.textContent = cfg.label;
+  btn.onclick = () => { state.cat = key; render(); document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); };
+  catDiv.appendChild(btn);
+});
+
+// All button
+catDiv.querySelector('[data-cat="all"]').onclick = function() {
+  state.cat = "all"; render();
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  this.classList.add('active');
+};
+
+// Search
+document.getElementById('searchInput').addEventListener('input', e => { state.query = e.target.value; render(); });
+
+// Lang toggle
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.onclick = () => { state.lang = btn.dataset.lang; document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); };
+});
+
+/* ─── FILTER ─── */
+function filterData() {
+  const q = state.query.toLowerCase().trim();
+  return MEDICINES.filter(m => {
+    if (state.cat !== "all" && m.cat !== state.cat) return false;
+    if (!q) return true;
+    const searchTargets = [m.nameEn, m.nameMm, m.genericEn, m.genericMm, m.usesEn, m.usesMm, ...m.tags];
+    return searchTargets.some(s => s.toLowerCase().includes(q));
+  });
+}
+
+/* ─── RENDER ─── */
+function render() {
+  const data = filterData();
+  const grid = document.getElementById('grid');
+  document.getElementById('showCount').textContent = data.length;
+  grid.innerHTML = '';
+
+  if (data.length === 0) {
+    grid.innerHTML = `<div class="no-results"><div class="no-results-icon">🔍</div><h3>No medicines found</h3><p>Try a different search term or category</p></div>`;
+    return;
+  }
+
+  data.forEach((m, i) => {
+    const cfg = CAT_CONFIG[m.cat];
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.cat = m.cat;
+    card.style.animationDelay = `${i * 40}ms`;
+
+    const showMm = state.lang !== 'en';
+    const showEn = state.lang !== 'mm';
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-names">
+          ${showEn ? `<div class="name-en">${m.nameEn}</div>` : ''}
+          ${showMm ? `<div class="name-mm">${m.nameMm}</div>` : ''}
+        </div>
+        <span class="cat-badge" style="background:${cfg.bg};color:${cfg.color};border:1px solid ${cfg.color}33">
+          ${m.cat.charAt(0).toUpperCase() + m.cat.slice(1)}
+        </span>
+      </div>
+      <div class="generic-row">Generic: <span>${m.genericEn}</span></div>
+      ${showEn ? `<div class="uses-en">${m.usesEn}</div>` : ''}
+      ${showMm ? `<div class="uses-mm">${m.usesMm}</div>` : ''}
+      <div class="card-footer">
+        ${m.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>`;
+    card.onclick = () => openModal(m);
+    grid.appendChild(card);
+  });
+}
+
+/* ─── MODAL ─── */
+function openModal(m) {
+  const cfg = CAT_CONFIG[m.cat];
+  document.getElementById('modal-title-en').textContent = m.nameEn;
+  document.getElementById('modal-title-mm').textContent = m.nameMm;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-label">Generic Name · အထုတ်ကုန်ဆေးအမည်</div>
+      <div class="detail-en">${m.genericEn}</div>
+      <div class="detail-mm">${m.genericMm}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Category · ဆေးအမျိုးအစား</div>
+      <span class="cat-badge" style="background:${cfg.bg};color:${cfg.color};border:1px solid ${cfg.color}33;font-size:0.75rem;padding:6px 14px">
+        ${cfg.label}
+      </span>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Uses · အသုံးပြုမှု</div>
+      <div class="detail-en">${m.usesEn}</div>
+      <div class="detail-mm">${m.usesMm}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Dosage · ဆေးပမာဏ</div>
+      <div class="dosage-grid">
+        <div class="dosage-item">
+          <div class="dosage-type">Adult · လူကြီး</div>
+          <div class="dosage-val">${m.dosageAdult}</div>
+        </div>
+        <div class="dosage-item">
+          <div class="dosage-type">Child · ကလေး</div>
+          <div class="dosage-val">${m.dosageChild}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Side Effects · ဘေးထွက်ဆိုးကျိုး</div>
+      <div class="warning-box">
+        <div class="detail-en">⚠️ ${m.sideEffectEn}</div>
+        <div class="detail-mm">${m.sideEffectMm}</div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">Tags</div>
+      <div class="card-footer" style="margin-top:0">
+        ${m.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.getElementById('modalOverlay').onclick = function(e) {
+  if (e.target === this) closeModal();
+};
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ─── START ─── */
+render();
+</script>
+</body>
+</html>
